@@ -10,6 +10,11 @@ Hello, {{.}}!
 <form action="/logout" method="post" style="display: inline-block;">
     <button type="submit">Logout</button>
 </form>
+<form action="/create-message" method="post">
+    <input type="text" name="message" placeholder="Write your message"/>
+    <input type="hidden" name="replyId" value="{{replyId}}"/>
+    <button type="submit">Submit</button>
+</form>
 <br>
 {{/username}}
 
