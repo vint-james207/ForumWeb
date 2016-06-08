@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+{{#username}}
+Hello, {{.}}!
+<form action="/logout" method="post" style="display: inline-block;">
+    <button type="submit">Logout</button>
+</form>
+<br>
+{{/username}}
+
+{{^username}}
+<form action="/login" method="post">
+    <input type="text" name="username" placeholder="Enter your name"/>
+    <button type="submit">Login</button>
+</form>
+<br>
+{{/username}}
+
+
+
+{{#messages}}
+<a href="/?replyId={{id}}">{{author}}: {{text}}</a><br>
+{{/messages}}
+</body>
+</html>
