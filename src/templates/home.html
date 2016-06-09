@@ -18,6 +18,16 @@ Hello, {{.}}!
 <br>
 {{/username}}
 
+{{#message}}
+<h1>{{author}}: {{text}}</h1>
+{{#isMe}}
+<form action="/delete-message" method="post">
+    <input type="hidden" name="id" value="{{id}}"/>
+    <button type="submit">Delete</button>
+</form>
+{{/isMe}}
+{{/message}}
+
 {{^username}}
 <form action="/login" method="post">
     <input type="text" name="username" placeholder="Enter your name"/>

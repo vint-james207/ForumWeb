@@ -1,6 +1,5 @@
 package com.james;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import spark.ModelAndView;
 import spark.Session;
 import spark.Spark;
@@ -31,17 +30,24 @@ public class Main {
                         replyId = Integer.valueOf(idStr);
                     }
 
-                    ArrayList<Message> subset = new ArrayList<Message>();
+                    ArrayList<Message> subset = new ArrayList<>();
                     for (Message msg : messages) {
                         if (msg.replyId == replyId) {
                             subset.add(msg);
                         }
                     }
 
+                    Message parentMsg = null;
+                    if (replyId >= 0) {
+                        parentMsg = messages.get(replyId);
+                    }
+
                     HashMap m = new HashMap();
                     m.put("messages", subset);
                     m.put("username", username);
                     m.put("replyId", replyId);
+                    m.put("message", parentMsg);
+                    m.put("isMe", parentMsg != null && username != null && parentMsg.author.equals(username));
                     return  new ModelAndView(m, "home.html");
                 },
                 new MustacheTemplateEngine()
@@ -94,6 +100,29 @@ public class Main {
                     response.redirect(request.headers("Referer"));
                     return "";
 
+                }
+        );
+        Spark.post(
+                "/delete-message",
+                (request, response) -> {
+                    int id = Integer.valueOf(request.queryParams("id"));
+
+                    Session session = request.session();
+                    String username = session.attribute("username");
+                    Message m = messages.get(id);
+                    if (!m.author.equals(username)) {
+                        throw new Exception("You can't delete this!");
+                    }
+
+                    messages.remove(id);
+                    //reset ids
+                    int index = 0;
+                    for (Message msg : messages) {
+                        msg.id = index;
+                        index++;
+                    }
+                    response.redirect("/");
+                    return "";
                 }
         );
 
